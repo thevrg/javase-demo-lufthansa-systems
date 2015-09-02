@@ -21,7 +21,9 @@ public class Department {
 
     public boolean addEmployee(Employee emp) {
         if (numberOfEmployees >= employees.length) {
-            return false;
+            Employee[] newEmployeeArray = new Employee[employees.length * 2];
+            System.arraycopy(employees, 0, newEmployeeArray, 0, employees.length);
+            employees = newEmployeeArray;
         }
         employees[numberOfEmployees++] = emp;
         return true;
