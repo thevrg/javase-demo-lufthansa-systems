@@ -71,16 +71,12 @@ public class DepartmentTest {
         assertSame(emp3, getEmp2Result);
     }
 
-    @Test
-    public void testGetEmployeeReturnsNullForNegativeIndexValues() {
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetEmployeeShouldThrowIndexOutOfBoundsExceptionForNegativeIndexValues() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
         Employee getEmpMinusOneResult = dep.getEmployee(-1);
-        Employee getEmpMinusThousandResult = dep.getEmployee(-1000);
-        //Then
-        assertNull(getEmpMinusOneResult);
-        assertNull(getEmpMinusThousandResult);
     }
 
     @Test
@@ -119,32 +115,54 @@ public class DepartmentTest {
     /**
      * Test of removeEmployee method, of class Department.
      */
-    @Test
-    public void testRemoveEmployee_int_ShouldReturnFalseWhenIndexIsNegative() {
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveEmployee_int_ShouldThrowIndexOutOfBoundsExceptionWhenIndexIsNegative() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        boolean removeEmployeeMinusOneResult = dep.removeEmployee(-1);
-        boolean removeEmployeeMinusOneHundredResult = dep.removeEmployee(-100);
-        //Then
-        assertFalse(removeEmployeeMinusOneResult);
-        assertFalse(removeEmployeeMinusOneHundredResult);
+        dep.removeEmployee(-1);
+    }
 
+    /**
+     * Test of removeEmployee method, of class Department.
+     */
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveEmployee_int_ShouldThrowIndexOutOfBoundsExceptionWhenIndexIsNegative2() {
+        //Given
+        Department dep = createHRDepartmentWithThreeEmployees();
+        //When
+        dep.removeEmployee(-100);
     }
 
     /**
      * Test of removeEmployee method, of class Department.
      */
     @Test
-    public void testRemoveEmployee_int_ShouldReturnFalseWhenIndexIsNotValid() {
+    public void testRemoveEmployee_int_ShouldThrowIndexOutOfBoundsExceptionWhenIndexIsNotValid() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        boolean removeEmployeeThreeOneResult = dep.removeEmployee(3);
-        boolean removeEmployeeOneHundredResult = dep.removeEmployee(100);
-        //Then
-        assertFalse(removeEmployeeThreeOneResult);
-        assertFalse(removeEmployeeOneHundredResult);
+        try {
+            dep.removeEmployee(3);
+            fail("IndexOutOfBoundsException is expected here, but no exception was thrown");
+        } catch (IndexOutOfBoundsException ex) {
+            //expected
+        } catch (AssertionError ex) {
+            throw ex; // transparently let the assertion error fall through
+        } catch (Throwable t) {
+            throw new AssertionError("Unexpected exception", t);
+        }
+
+        try {
+            dep.removeEmployee(300);
+            fail("IndexOutOfBoundsException is expected here, but no exception was thrown");
+        } catch (IndexOutOfBoundsException ex) {
+            //expected
+        } catch (AssertionError ex) {
+            throw ex; // transparently let the assertion error fall through
+        } catch (Throwable t) {
+            throw new AssertionError("Unexpected exception", t);
+        }
 
     }
 
@@ -186,12 +204,13 @@ public class DepartmentTest {
         assertSame(emp2, dep.getEmployee(0));
         assertSame(emp3, dep.getEmployee(1));
     }
-    
+
     @Test
     public void testEmployeeIterator() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         EmployeeIterator it = dep.iterator();
+        
         //When
         boolean hasNext1 = it.hasNext();
         Employee next1 = it.next();
@@ -200,7 +219,14 @@ public class DepartmentTest {
         boolean hasNext3 = it.hasNext();
         Employee next3 = it.next();
         boolean hasNext4 = it.hasNext();
-        Employee next4 = it.next();
+        
+        Throwable exception4 = null;
+        try {
+            it.next(); //fourth invocation
+        } catch (Throwable t) {
+            exception4 = t;
+        }
+        
         //Then
         assertTrue(hasNext1);
         assertEquals(emp1, next1);
@@ -209,8 +235,10 @@ public class DepartmentTest {
         assertTrue(hasNext3);
         assertEquals(emp3, next3);
         assertFalse(hasNext4);
-        assertNull(next4);
-        
+        assertNotNull("next() should throw an exception at the fourth invocation", exception4);
+        assertTrue("next() should throw an IllegalStateException at the fourth invocation, but it threw this: " + exception4,
+                exception4 instanceof IllegalStateException);
+
     }
 
 }

@@ -7,12 +7,21 @@ package hu.dpc.edu.javase.demo;
 public class Department {
 
     private String name;
+    private long changedAt;
 
     private Employee[] employees = new Employee[10];
     private int numberOfEmployees;
 
+    {
+        setChangedAt();
+    }
+    
     public String getName() {
         return name;
+    }
+    
+    private void setChangedAt() {
+        changedAt = System.nanoTime();
     }
 
     public void setName(String name) {
@@ -26,23 +35,21 @@ public class Department {
             employees = newEmployeeArray;
         }
         employees[numberOfEmployees++] = emp;
+        setChangedAt();
         return true;
     }
 
-    public Employee getEmployee(int index) {
-        if (!isIndexValid(index)) {
-            return null;
-        }
+    public Employee getEmployee(int index) throws IndexOutOfBoundsException {
+        checkIndex(index);
         return employees[index];
     }
 
-    private boolean isIndexValid(int index) {
+    private void checkIndex(int index) throws IndexOutOfBoundsException {
         if (index < 0) {
-            return false;
+            throw new IndexOutOfBoundsException("Index cannot be negative");
         } else if (index >= numberOfEmployees) {
-            return false;
+            throw new IndexOutOfBoundsException("Index is too large");
         }
-        return true;
     }
 
     public int getNumberOfEmployees() {
@@ -60,34 +67,42 @@ public class Department {
     }
 
     public boolean removeEmployee(int index) {
-        if (!isIndexValid(index)) {
-            return false;
-        }
-
+        checkIndex(index);
         if (index != numberOfEmployees - 1) {
             int numberOfElementsToMove = numberOfEmployees - index - 1;
             System.arraycopy(employees, index + 1, employees, index, numberOfElementsToMove);
         }
         numberOfEmployees--;
         employees[numberOfEmployees] = null;
+        setChangedAt();
         return true;
     }
 
     public EmployeeIterator iterator() {
         return new EmployeeIterator() {
             private int iteratorIndex;
+            private long createdAt = System.nanoTime();
+            
+            private void checkChangedState() {
+                if (createdAt < Department.this.changedAt) {
+                    throw new IllegalStateException("Department has changed since the creation of this iterator");
+                }
+            }
 
             @Override
-            public boolean hasNext() {
+            public boolean hasNext() throws IllegalStateException {
+                checkChangedState();
                 return iteratorIndex < numberOfEmployees;
             }
 
             @Override
-            public Employee next() {
-                if (!isIndexValid(iteratorIndex)) {
-                    return null;
+            public Employee next() throws IllegalStateException {
+                checkChangedState();
+                try {
+                    return getEmployee(iteratorIndex++);
+                } catch (IndexOutOfBoundsException ex) {
+                    throw new IllegalStateException("No more elements");
                 }
-                return getEmployee(iteratorIndex++);
             }
         };
     }
