@@ -84,11 +84,25 @@ public class DepartmentTest {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        Employee getEmpThreeOneResult = dep.getEmployee(3);
-        Employee getEmpThousandResult = dep.getEmployee(1000);
+        Throwable getEmployee3Exception = null;
+        Throwable getEmployee1000Exception = null;
+                
+        try {
+            dep.getEmployee(3);
+        } catch (Throwable t) {
+            getEmployee3Exception = t;
+        }
+        try {
+            dep.getEmployee(1000);
+        } catch (Throwable t) {
+            getEmployee1000Exception = t;
+        }
+        
         //Then
-        assertNull(getEmpThousandResult);
-        assertNull(getEmpThousandResult);
+        assertNotNull(getEmployee3Exception);
+        assertTrue(getEmployee3Exception instanceof IndexOutOfBoundsException);
+        assertNotNull(getEmployee1000Exception);
+        assertTrue(getEmployee1000Exception instanceof IndexOutOfBoundsException);
     }
 
     /**
