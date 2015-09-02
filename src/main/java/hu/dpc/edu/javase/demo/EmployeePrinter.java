@@ -19,7 +19,6 @@ public class EmployeePrinter {
     }
     
     public void printEmployees(EmployeeIterator iterator) {
-        iterator.reset();
         while (iterator.hasNext()) {
             Employee emp = iterator.next();
             out.println(emp);

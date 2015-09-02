@@ -12,6 +12,5 @@ package hu.dpc.edu.javase.demo;
 public interface EmployeeIterator {
     public boolean hasNext();
     public Employee next();
-    public void reset();
     
 }

@@ -191,16 +191,16 @@ public class DepartmentTest {
     public void testEmployeeIterator() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
+        EmployeeIterator it = dep.iterator();
         //When
-        dep.reset();
-        boolean hasNext1 = dep.hasNext();
-        Employee next1 = dep.next();
-        boolean hasNext2 = dep.hasNext();
-        Employee next2 = dep.next();
-        boolean hasNext3 = dep.hasNext();
-        Employee next3 = dep.next();
-        boolean hasNext4 = dep.hasNext();
-        Employee next4 = dep.next();
+        boolean hasNext1 = it.hasNext();
+        Employee next1 = it.next();
+        boolean hasNext2 = it.hasNext();
+        Employee next2 = it.next();
+        boolean hasNext3 = it.hasNext();
+        Employee next3 = it.next();
+        boolean hasNext4 = it.hasNext();
+        Employee next4 = it.next();
         //Then
         assertTrue(hasNext1);
         assertEquals(emp1, next1);

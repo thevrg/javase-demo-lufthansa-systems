@@ -4,8 +4,8 @@ package hu.dpc.edu.javase.demo;
  *
  * @author u122951
  */
-public class Department implements EmployeeIterator {
-    
+public class Department {
+
     private String name;
 
     private Employee[] employees = new Employee[10];
@@ -18,7 +18,7 @@ public class Department implements EmployeeIterator {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public boolean addEmployee(Employee emp) {
         if (numberOfEmployees >= employees.length) {
             return false;
@@ -71,24 +71,23 @@ public class Department implements EmployeeIterator {
         return true;
     }
 
-    private int iteratorIndex;
-    
-    @Override
-    public boolean hasNext() {
-        return iteratorIndex < numberOfEmployees;
-    }
+    public EmployeeIterator iterator() {
+        return new EmployeeIterator() {
+            private int iteratorIndex;
 
-    @Override
-    public Employee next() {
-        if (!isIndexValid(iteratorIndex)) {
-            return null;
-        }
-        return getEmployee(iteratorIndex++);
-    }
+            @Override
+            public boolean hasNext() {
+                return iteratorIndex < numberOfEmployees;
+            }
 
-    @Override
-    public void reset() {
-        iteratorIndex = 0;
+            @Override
+            public Employee next() {
+                if (!isIndexValid(iteratorIndex)) {
+                    return null;
+                }
+                return getEmployee(iteratorIndex++);
+            }
+        };
     }
 
 }
