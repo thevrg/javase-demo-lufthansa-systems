@@ -40,8 +40,47 @@ public class MyPoint implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        System.out.println("hashCode()");
+        int hash = 3;
+        hash = 29 * hash + this.y;
+        hash = 29 * hash + this.x;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        System.out.println("equals()");
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MyPoint other = (MyPoint) obj;
+        if (this.y != other.y) {
+            return false;
+        }
+        if (this.x != other.x) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "MyPoint{" + "x=" + x + ", y=" + y + '}';
+    }
+
+   
+    public int compareTo(Object o) {
+        System.out.println("compareTo");
+        MyPoint other = (MyPoint) o;
+        int result = x - other.x;
+        if (result == 0) {
+            result = y - other.y;
+        }
+        return result;
     }
     
 }

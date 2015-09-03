@@ -1,5 +1,7 @@
 package hu.dpc.edu.javase.demo;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -185,9 +187,9 @@ public class DepartmentTest {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        boolean removeEmployeeResult = dep.removeEmployee(2);
+        Employee removeEmployeeResult = dep.removeEmployee(2);
         //Then
-        assertTrue("removeEmployee should return true", removeEmployeeResult);
+        assertSame("removeEmployee should return the deleted Employee", emp3, removeEmployeeResult);
         assertEquals("removeEmployee Should Decrease number of employees", 2, dep.getNumberOfEmployees());
         assertSame(emp1, dep.getEmployee(0));
         assertSame(emp2, dep.getEmployee(1));
@@ -198,9 +200,9 @@ public class DepartmentTest {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        boolean removeEmployeeResult = dep.removeEmployee(1);
+        Employee removeEmployeeResult = dep.removeEmployee(1);
         //Then
-        assertTrue("removeEmployee should return true", removeEmployeeResult);
+        assertSame(emp2, removeEmployeeResult);
         assertEquals("removeEmployee Should Decrease number of employees", 2, dep.getNumberOfEmployees());
         assertSame(emp1, dep.getEmployee(0));
         assertSame(emp3, dep.getEmployee(1));
@@ -211,9 +213,9 @@ public class DepartmentTest {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
         //When
-        boolean removeEmployeeResult = dep.removeEmployee(0);
+        Employee removeEmployeeResult = dep.removeEmployee(0);
         //Then
-        assertTrue("removeEmployee should return true", removeEmployeeResult);
+        assertSame(emp1, removeEmployeeResult);
         assertEquals("removeEmployee Should Decrease number of employees", 2, dep.getNumberOfEmployees());
         assertSame(emp2, dep.getEmployee(0));
         assertSame(emp3, dep.getEmployee(1));
@@ -223,15 +225,15 @@ public class DepartmentTest {
     public void testEmployeeIterator() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
-        EmployeeIterator it = dep.iterator();
+        Iterator it = dep.iterator();
         
         //When
         boolean hasNext1 = it.hasNext();
-        Employee next1 = it.next();
+        Employee next1 = (Employee) it.next();
         boolean hasNext2 = it.hasNext();
-        Employee next2 = it.next();
+        Employee next2 = (Employee) it.next();
         boolean hasNext3 = it.hasNext();
-        Employee next3 = it.next();
+        Employee next3 = (Employee) it.next();
         boolean hasNext4 = it.hasNext();
         
         Throwable exception4 = null;
@@ -250,8 +252,8 @@ public class DepartmentTest {
         assertEquals(emp3, next3);
         assertFalse(hasNext4);
         assertNotNull("next() should throw an exception at the fourth invocation", exception4);
-        assertTrue("next() should throw an IllegalStateException at the fourth invocation, but it threw this: " + exception4,
-                exception4 instanceof IllegalStateException);
+        assertTrue("next() should throw an NoSuchElementException at the fourth invocation, but it threw this: " + exception4,
+                exception4 instanceof NoSuchElementException);
 
     }
 

@@ -1,5 +1,10 @@
 package hu.dpc.edu.javase.demo;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  *
  * @author u122951
@@ -7,104 +12,46 @@ package hu.dpc.edu.javase.demo;
 public class Department {
 
     private String name;
-    private long changedAt;
 
-    private Employee[] employees = new Employee[10];
-    private int numberOfEmployees;
-
-    {
-        setChangedAt();
-    }
+    //private Employee[] employees = new Employee[10];
+    private List employees = new ArrayList();
+    private List readOnlyEmployees = Collections.unmodifiableList(employees);
     
     public String getName() {
         return name;
     }
     
-    private void setChangedAt() {
-        changedAt = System.nanoTime();
-    }
-
     public void setName(String name) {
         this.name = name;
     }
 
     public boolean addEmployee(Employee emp) {
-        if (numberOfEmployees >= employees.length) {
-            Employee[] newEmployeeArray = new Employee[employees.length * 2];
-            System.arraycopy(employees, 0, newEmployeeArray, 0, employees.length);
-            employees = newEmployeeArray;
-        }
-        employees[numberOfEmployees++] = emp;
-        setChangedAt();
-        return true;
+        return employees.add(emp);
     }
 
     public Employee getEmployee(int index) throws IndexOutOfBoundsException {
-        checkIndex(index);
-        return employees[index];
-    }
-
-    private void checkIndex(int index) throws IndexOutOfBoundsException {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("Index cannot be negative");
-        } else if (index >= numberOfEmployees) {
-            throw new IndexOutOfBoundsException("Index is too large");
-        }
+        return (Employee) employees.get(index);
     }
 
     public int getNumberOfEmployees() {
-        return numberOfEmployees;
+        return employees.size();
     }
 
     public boolean removeEmployee(Employee emp) {
-        for (int i = 0; i < numberOfEmployees; i++) {
-            Employee employee = employees[i];
-            if (employee.equals(emp)) {
-                return removeEmployee(i);
-            }
-        }
-        return false;
+        return employees.remove(emp);
     }
 
-    public boolean removeEmployee(int index) {
-        checkIndex(index);
-        if (index != numberOfEmployees - 1) {
-            int numberOfElementsToMove = numberOfEmployees - index - 1;
-            System.arraycopy(employees, index + 1, employees, index, numberOfElementsToMove);
-        }
-        numberOfEmployees--;
-        employees[numberOfEmployees] = null;
-        setChangedAt();
-        return true;
+    public Employee removeEmployee(int index) {
+        return (Employee) employees.remove(index);
     }
 
-    public EmployeeIterator iterator() {
-        return new EmployeeIterator() {
-            private int iteratorIndex;
-            private long createdAt = System.nanoTime();
-            
-            private void checkChangedState() {
-                if (createdAt < Department.this.changedAt) {
-                    throw new IllegalStateException("Department has changed since the creation of this iterator");
-                }
-            }
-
-            @Override
-            public boolean hasNext() throws IllegalStateException {
-                checkChangedState();
-                return iteratorIndex < numberOfEmployees;
-            }
-
-            @Override
-            public Employee next() throws IllegalStateException {
-                checkChangedState();
-                try {
-                    return getEmployee(iteratorIndex++);
-                } catch (IndexOutOfBoundsException ex) {
-                    throw new IllegalStateException("No more elements");
-                }
-            }
-        };
+    public Iterator iterator() {
+        return readOnlyEmployees.iterator();
     }
 
+    public List getEmployees() {
+        return readOnlyEmployees;
+    }
+    
+    
 }
