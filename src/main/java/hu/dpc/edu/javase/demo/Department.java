@@ -9,13 +9,13 @@ import java.util.List;
  *
  * @author u122951
  */
-public class Department {
+public class Department implements Iterable<Employee> {
 
     private String name;
 
     //private Employee[] employees = new Employee[10];
-    private List employees = new ArrayList();
-    private List readOnlyEmployees = Collections.unmodifiableList(employees);
+    private List<Employee> employees = new ArrayList<>();
+    private List<Employee> readOnlyEmployees = Collections.unmodifiableList(employees);
     
     public String getName() {
         return name;
@@ -30,7 +30,7 @@ public class Department {
     }
 
     public Employee getEmployee(int index) throws IndexOutOfBoundsException {
-        return (Employee) employees.get(index);
+        return employees.get(index);
     }
 
     public int getNumberOfEmployees() {
@@ -42,10 +42,10 @@ public class Department {
     }
 
     public Employee removeEmployee(int index) {
-        return (Employee) employees.remove(index);
+        return employees.remove(index);
     }
 
-    public Iterator iterator() {
+    public Iterator<Employee> iterator() {
         return readOnlyEmployees.iterator();
     }
 

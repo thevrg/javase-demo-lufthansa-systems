@@ -225,15 +225,15 @@ public class DepartmentTest {
     public void testEmployeeIterator() {
         //Given
         Department dep = createHRDepartmentWithThreeEmployees();
-        Iterator it = dep.iterator();
+        Iterator<Employee> it = dep.iterator();
         
         //When
         boolean hasNext1 = it.hasNext();
-        Employee next1 = (Employee) it.next();
+        Employee next1 =  it.next();
         boolean hasNext2 = it.hasNext();
-        Employee next2 = (Employee) it.next();
+        Employee next2 =  it.next();
         boolean hasNext3 = it.hasNext();
-        Employee next3 = (Employee) it.next();
+        Employee next3 =  it.next();
         boolean hasNext4 = it.hasNext();
         
         Throwable exception4 = null;

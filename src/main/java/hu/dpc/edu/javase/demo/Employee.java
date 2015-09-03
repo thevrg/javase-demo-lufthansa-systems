@@ -1,10 +1,12 @@
 package hu.dpc.edu.javase.demo;
 
+import hu.dpc.edu.javase.demo.generics.Entity;
+
 /**
  *
  * @author vrg
  */
-public class Employee extends MyBaseClass {
+public class Employee extends MyBaseClass implements Entity<Long> {
 
     public static final double DEFAULT_SALARY;
     private static int counter = 0;
@@ -57,7 +59,8 @@ public class Employee extends MyBaseClass {
         this.name = name;
     }
 
-    public long getId() {
+    @Override
+    public Long getId() {
         return id;
     }
 
@@ -71,5 +74,29 @@ public class Employee extends MyBaseClass {
         sb.append("name=").append(name);
         sb.append("id=").append(id);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (int) (this.id ^ (this.id >>> 32));
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Employee other = (Employee) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }
