@@ -1,6 +1,7 @@
 package hu.dpc.edu.javase.demo;
 
 import hu.dpc.edu.javase.demo.generics.Entity;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -9,18 +10,17 @@ import hu.dpc.edu.javase.demo.generics.Entity;
 public class Employee extends MyBaseClass implements Entity<Long> {
 
     public static final double DEFAULT_SALARY;
-    private static int counter = 0;
+    private static final AtomicInteger counter = new AtomicInteger();
     private double salary;
     private String name;
     public long id;
 
     private static long generateId() {
-        return ++counter;
+        return counter.incrementAndGet();
     }
 
     static {
         DEFAULT_SALARY = 1000;
-        counter += 1000;
         System.out.println("Employee.class loaded successfully");
     }
 
@@ -65,7 +65,7 @@ public class Employee extends MyBaseClass implements Entity<Long> {
     }
 
     public static int getCounter() {
-        return counter;
+        return counter.get();
     }
 
     @Override
